@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Virtual Multiblog Readme</title>
+	<style type="text/css">
+		body {line-height: 1.3; background-color: white;}
+		code, pre {color: green; font-size: 110%;}
+	</style>
+</head>
+<body>
+<h1 style="margin-bottom: .2em">Virtual Multiblog</h1>
+<h2 style="margin-bottom: .2em; margin-top: .2em">for WordPress</h2>
+<h2 style="margin-top: .2em; font-size: 100%">a.k.a. "Strider's Modified Mertner Method Multiblog"</h2>
+
+<p>Home Page:
+	<a href="http://striderweb.com/nerdaphernalia/features/virtual-multiblog/">http://striderweb.com/nerdaphernalia/features/virtual-multiblog/</a><br />
+<small>Readme Updated 28 May 2009, includes VMB 2.6</small></p>
+
+<p>Virtual Multiblog allows you to run more than one blog off a single install of WordPress.  Each blog is managed as a completely separate install -- separate admin sections, separate users, etc.  They will happily co-exist with different themes and plugins activated.  The biggest advantage is that you will only have to keep one set of program files up-to-date, and this method should be expandable to as many different blogs as you like.</p>
+
+<h2>DISCLAIMER</h2>
+
+<p>USE AT YOUR OWN RISK.  If it blows up, or deletes your hard drive, or in any other way does something you don't want it to do, too bad.  Not my responsibility.  If you don't agree with those terms, Don't Use It.</p>
+
+<p>THAT BEING SAID... I (Stephen) use it myself.  I believe it works well, and if you do have problems, I would be interested in knowing about them so I can make improvements to the system.</p>
+
+<h2>CONTENTS</h2>
+<ul>
+	<li><a href="#Installation">Installation</a>
+		<ul>
+			<li><a href="#easy_setup">Easy Setup</a></li>
+			<li><a href="#advanced_setup">Advanced Setup</a></li>
+			<li><a href="#cust_config_files">Giving a Blog Its Own Config File (Optional)</a>
+				<ul><li><a href="#vuser">Determining VUSER</a></li></ul></li>
+			<li><a href="#auto_plugins">Automatically Activate Plugins</a></li>
+			<li><a href="#cust_file_paths">Custom File Locations (Optional)</a></li>
+			<li><a href="#easy_subdomains">Easy Subdomains (Optional)</a></li>
+			<li><a href="#symlinks">Creating Symbolic Links</a></li></ul>
+	<li><a href="#new_functions">New Functions</a></li>
+	<li><a href="#permalinks">Using Custom Permalinks</a></li>
+	<li><a href="#future">The Future</a></li>
+	<li><a href="#contribute">Contribute</a></li>
+	<li><a href="#history">History/ Acknowledgements</a></li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<p>First I'll give a basic overview of how this works.  WordPress will be installed normally in one directory, and additional blogs will be created by pointing other domains, subdomains, or "directories" at that one install.  "Directories" in this case are actually Symbolic Links (or "symlinks"), which are a type of secondary representation of a directory -- somewhat similar to a Mac alias or a Windows shortcut.  There is a single change to the WordPress code to make this all work: a modified configuration file that loads a different configuration depending on what directory or domain it thinks it's in.  Everything else is stock standard WordPress, which makes this method <em>extremely</em> compatible with existing plugins, themes, and add-ons of all kinds.</p>
+
+<h3 id="easy_setup">Easy Setup</h3>
+<p>CRITERIA -- You can use easy setup if all blogs' data will be held in a single database.</p>
+<p>For these directions, we'll use an example setup.  We are going to set up four blogs, at http://www.catblog.com/, http://www.dogblog.com/, http://mutts.dogblog.com/, and http://www.catblog.com/persians/</p>
+<p>(NOTE: As of version 2.4 the plugin is no longer needed.)</p>
+<ol>
+	<li>Install the WordPress files as usual.</li>
+	<li>Place the "multiblog" folder in the <code>wp-content/</code> directory.</li>
+	<li>Move the <code>wp-config.php</code> file from "multiblog" to the directory in which you installed WordPress.</li>
+	<li>In the <code>wp-content/multiblog/config/</code> folder, rename <code>mb-autoconfig-sample.php</code> to <code>mb-autoconfig.php</code>.  Open <code>mb-autoconfig.php</code> in a text editor.  Input your database login information.</li>
+	<li>Set up whatever symbolic links, subdomains, or domains you wish so they all point to the directory with WordPress installed.  Note: redirects and "parking" will not work for domains -- the domains must be set up directly on the server.  (In Apache that probably means "<a href="http://httpd.apache.org/docs/1.3/vhosts/">Virtual Hosts</a>".)</li>
+	<li>In this example:<ul>
+		<li>WordPress is installed in the root directory.  Catblog.com, dogblog.com, and mutts.dogblog.com are pointed to that root directory.  We then create a symlink called "persians" in the root directory that points back to the root directory.</li>
+		<li>Yes, this means that dogblog.com/persians and mutts.dogblog.com/persians are also active blogs.  To prevent this, you would have to use the Advanced Setup described below.  This is a pretty catch-all example, but in Real Life&trade; <strong>I do not recommend mixing directory blogs with multiple domains using Easy Setup</strong>.  If there is only one domain pointed to these directories, then this is not an issue.</li></ul></li>
+	<li>With your web browser, go to each blog and set things up as normal through WordPress.</li>
+</ol>
+<p>You're done!  Told you it was easy!</p>
+
+<h3 id="advanced_setup">Advanced Setup</h3>
+<p>Advanced setup allows for a bit more security, and allows for a default "fallback" blog.  In the future, advanced setup will hopefully allow for advanced template functions such as calling a list of links to all blogs in the multiblog setup.</p>
+<p>For this example, we're going to create http://www.catblog.com/, http://www.dogblog.com/, http://mutts.dogblog.com/, http://www.dogblog.com/fido/, and http://www.catblog.com/celebrities/morris/</p>
+<ol>
+	<li>Follow Steps 1-4 from the Easy Install.</li>
+	<li>In <code>wp-content/multiblog/config/</code>, rename <code>mb-users-sample.php</code> to <code>mb-users.php</code>. Open <code>mb-users.php</code> in a text editor.  Populate <code>$vusers[]</code> according to the instructions there.  For this example we have:<br />
+<pre>
+$vusers[] = 'catblog.com';
+$vusers[] = 'dogblog.com';
+$vusers[] = 'mutts.dogblog.com';
+$vusers[] = 'catblog.com/celebrities/morris';
+$vusers[] = 'dogblog.com/fido';
+</pre>
+Save and close the file<ul><li>CAUTION: You could simply set that last one to <code>$vusers[] = 'fido';</code> (ditto <code>'celebrities/morris'</code>), but that would open us up to the same issue described in Easy Setup: catblog.com/fido would also be an active blog!  If mixing domains and directories, set specific $vusers!  Again, this is only an issue if using both multiple domains <em>and</em> directories.</li></ul></li>
+	<li>For this example:<ul>
+		<li>Set up the two domains, and the "mutts.dogblog" subdomain, to point to the same root directory.</li>
+		<li>In the site's root directory, create a symbolic link to the root directory, and call it "fido".  (More information on symbolic links can be found below).</li>
+		<li>In the site's root directory, create a folder called "celebrities".  Inside that folder, create a symbolic link to the root directory, and call it "morris".</li></ul></li>
+	<li>With your web browser, go to each blog and set things up as normal through WordPress.</li>
+</ol>
+
+	<h3 id="cust_config_files">OPTIONAL: Giving a blog its own config file</h3>
+	<p>Any blog using this setup can have its own completely separate config file.  You can do this if, for example, you want to store a blog's data in a separate database.  <em>You can do this for just one blog, all of them, or none of them.</em></p>
+	<p>Go into the <code>wp-content/multiblog/config/</code> directory and make a copy of <code>mb-config-sample.php</code>.  Rename it to <code>mb-config-VUSER.php</code>  (See below for how to determine the VUSER.)  Open that file in a text editor and set the database information and, optionally, the <code>$table_prefix</code>.  If you use the same database for multiple blogs, you <em>must</em> set a different <code>$table_prefix</code> for each.  If you don't set <code>$table_prefix</code>, it will be auto-configured.</p>
+	<p><strong>IMPORTANT</strong>: You should note that, as of VMB 2.5, both autoconfig and the blog-specific config are called, in that order.  Anything set in the blog specific file will override a similar settings from the autoconfig.  Because of this, you can set default settings in autoconfig and then <em>just</em> set the changes in the blog specific files.  This is very handy if, for example, the only configuration difference between blogs is the table prefix or language.</p>
+	<p>In the new config files, instead of defining CONSTANTs directly, we now assign them via <code>$vmb_const[]</code>.  This is what allows the override I just described -- PHP doesn't let you re-define a constant, but the VMB system runs through all the config files and then takes anything in <code>$vmb_const[]</code> and assigns it as a constant according to its last value.  Yes, that means that you can set ANY constant this way in your config files.</p>
+
+<div style="margin-left: 3em;">
+	<h4 id="vuser">Determining VUSER</h4>
+	<p>If you use the "Easy Setup" method, then your VUSER is the domain or subdomain, plus directory if any, except that all non-alphanumeric characters are replaced with an understroke ('_'), and any 'www.' is removed.  (Non-alphanumeric = anything not a letter or a number.)</p>
+	<p>If you set up the <code>$vusers[]</code> array in <code>mb-users.php</code>, then the current VUSER for a blog is whatever that value is, cleaned up as described in the previous paragraph.</p>
+	<p>For example:  With "<code>mutts.dogblog.com</code>", the VUSER is "<code>mutts_dogblog_com</code>".  For "<code>www.catblog.com/morris</code>", the VUSER is "<code>catblog_com_morris</code>" and the config file is <code>mb-config-catblog_com_morris.php</code>.  (Note the difference between dashes and understrokes!)</p>
+</div>
+
+<h3 id="auto_plugins">OPTIONAL: Automatically Activate Plugins</h3>
+<p><em>Requires WordPress 2.8 or higher.</em></p>
+<p>You can set certain WordPress plugins to be activated automatically in all (or some) blogs.  The plugins should be placed in the regular WP plugins directory.  In a config file, create a list of the plugin files you want auto-activated, adding them to the <code>$vmb_auto_plugins</code> array.  The plugin files should be listed relative to the <code>plugins folder</code>.  For example:</p>
+
+<pre><code>$vmb_auto_plugins[] = 'hello.php';
+$vmb_auto_plugins[] = 'akismet/akismet.php';
+</code></pre>
+
+<p><strong>Important:</strong> There is one additional piece of setup required for this to work.  In the <code>multiblog</code> folder there is a folder named <code>mu-plugins</code>.  Move the <code>mu-plugins</code> folder into the <code>wp-content</code> folder.  You should end up with <code>/wp-content/mu-plugins/vmb-plugins-bootstrap.php</code></p>
+
+<p>Note that this is a complete override of regular WordPress plugin activation.  That is, these plugins cannot be turned off via the normal WordPress interface.  To turn them off, remove them from the <code>$vmb_auto_plugins[]</code> array.  They should function normally in all other ways.</p>
+
+<h3 id="cust_file_paths">OPTIONAL: Custom File Locations</h3>
+<p>You can change the location of multiblog folder as well as the your config folder.  Open up the <code>wp-config.php</code> file and follow the instructions therein.</p>	
+<p>Changing the location of the config folder has a couple advantages:</p>
+<ul><li>You can increase security by moving your database login information out of the web-accessible directories</li>
+	<li>It makes updates easier because your configuration files won't be overwritten when you replace an older <code>multiblog</code> folder.</li></ul>
+<p>If you are setting a custom wp-content folder via the standard WordPress constant <code>WP_CONFIG_DIR</code>, <strong>you must set <code>VMB_DIR</code></strong>.
+
+<h3 id="easy_subdomains">OPTIONAL: Easy Subdomains (Advanced Setup only)</h3>
+<p>Let's say you have a whole bunch of blogs you want to put on subdomains of dogblog.com.  You can save yourself some typing by setting <code>$mydomain = 'dogblog.com';</code> in the <code>mb-users.php</code> file.  If that is set, you can add subdomain blogs by name alone, e.g. <code>$vusers[] = 'mutts';</code> would work for both <code>http://mutts.dogblog.com/</code> and <code>http://www.dogblog.com/mutts/</code>.  Mind you, both of those would be the same blog with the same WordPress tables (and note the caution in Step 3 of Advanced Setup).  You can't set two different domains to <code>$mydomain</code>.</p>
+
+<h3 id="symlinks">Creating Symbolic Links</h3>
+
+<p>Sorry -- this section isn't complete yet.  The simplest solution for the non-techie is to ask your hosting provider to do it for you. :)</p>
+
+<p>Slightly longer answer -- there is no simple set of instructions, as setting up Symbolic Links can be different depending on your Operating System, disk filesystem, PHP version or configuration, server configuration, and so forth.  Nonetheless, I will try to get some pointers up at some point.</p>
+
+<p>Let me put it another way. <strong><em>I</em></strong> don't make my own symlinks -- I call my web host, Mike.  However, on my test site (running on my OS X laptop via <a href="http://www.mamp.info/">MAMP</a>) I have a utility called <a href="http://www.maintain.se/cocktail/">Cocktail</a> that makes them for me.</p>
+
+<p>If you are on a Unix-like system (including Linux or OS X) you can probably open a Terminal window and use the <code>ln</code> command.</p>
+
+<h2 id="new_functions">New Functions</h2>
+
+<p>The following are stable and can be called in templates or plugins:</p>
+
+<dl>
+	<dt>constant <code>VUSER</code></dt>
+		<dd>The current virtual user.  This is handy for creating Themes, for example, as you can call different template files for each VUSER.</dd>
+	<dt>function <code>get_virtual_user( $clean )</code></dt>
+		<dd>Returns the current virtual user.  Set <code>$clean</code> to TRUE to get a "filename friendly" version -- with dots, slashes, etc. converted to underscores.</dd>
+	<dt>function <code>$vmb->get_bloginfo( $show )</code></dt>
+		<dd>The following are recognized for <code>$show</code>:<ul>
+			<li><code>'config'</code>: the config file being used. Setting second parameter to <code>true</code> will return the entire server path as well</li>
+			<li><code>'vuser'</code>: deprecated.  Use <code>get_virtual_user()</code> instead.</li></ul></dd>
+	<dt>function <code>$vmb->get_sysinfo( $show )</code></dt>
+		<dd>The following are recognized for <code>$show</code>:<ul>
+			<li><code>'configpath'</code>: the server path to the configuration files.</li>
+			<li><code>'diagnostics'</code> (other parameters: <code>$html</code>, <code>$override</code>): returns diagnostic info to help with troubleshooting.  By default, wraps result in <code>&lt;pre&gt;</code> tags;  set <code>$html = false</code> to return the raw string.  IMPORTANT:  By default this function returns <em>nothing</em> unless <code>$vmb_diagnostics</code> is set to <code>true</code> in <code>wp-config.php</code>.  This means you can leave it in a template and only have it show when needed.  If you want to show it always, set <code>$override</code> to <code>true</code>.</li>
+			<li><code>'version'</code>: the version of the Virtual Multiblog system.</li>
+		</ul></dd>
+</dl>
+
+<h2 id="permalinks">Using Custom Permalinks</h2>
+
+<p>If you are just using domain or subdomain-based addressing, the default WordPress rewrites will work just fine.  If you are using directory-based blogs, and you want to use "pretty" permalinks, you will need to make some changes to your <code>.htaccess</code> file:</p>
+
+<p>Open up your <code>.htaccess</code> in a text editor.  Delete everything between "# BEGIN WordPress" and "# END WordPress".  Above the "# BEGIN WordPress", insert the following (putting in your blog names of course)...</p>
+
+<pre>
+&lt;IfModule mod_rewrite.c&gt;
+RewriteEngine On
+RewriteCond %{REQUEST_URI} (/cat|/dog)?/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . %1/index.php [L]
+&lt;/IfModule&gt;
+</pre>
+
+<p>... and then <strong>set permissions on the <code>.htaccess</code> file so that WordPress can <em>not</em> overwrite this</strong>.  For additional blogs, simply add the symbolic links inside the parentheses on the third line like so: <code>(/cat|/dog|/bird|/lizard)?/</code></p>
+
+<h2 id="future">The Future</h2>
+
+<p>I have a number of plans for down the road.  First off is figuring out a way for the system to "register" all the blogs running off a particular setup.  (That is, enable your setup to keep track of all your sites.)  Once that happens, I can do a lot of neat things, such as WordPress functions that list all blogs, or allowing a single login that spans multiple sites/blogs.</p>
+
+<p>I am also constantly seeking ways to further smooth the install and configuration process.  For example: once I get the registration system set up, I may also be able to automate the mod_rewrite stuff, so that WordPress's "pretty permalinks" will work without manual modifications to the .htaccess file.</p>
+
+<p>I also plan on figuring out a way to automate update notifications, and soon the Plugins page may just have a row for VMB.  (Even though it's not technically a plugin, I think it would be nice to have the info, version, and links on the Plugins page.)</p>
+
+<p>All this will take time, of course.  That why it's "the future" ;).  But I do use the system myself, and I would like to see all of these ideas realized.</p>
+
+<h2 id="contribute">Contribute</h2>
+
+<p><em>Was this download worth something to you?</em></p>
+<p>I've put a lot of time and effort into making Virtual Multiblog work well.  I use it myself, and I'm gratified that so many others have found it useful.  If you would like to support my efforts, (and encourage me to code faster!) please consider making a donation.  The suggested donation for use of this system is $20-25, but every bit helps, and even a dollar or two is appreciated.
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="margin-left: 5em;"> <input name="cmd" value="_xclick" type="hidden" /> <input name="business" value="paypal2@striderweb.com" type="hidden" /> <input name="item_name" value="Striderweb/Nerdaphernalia" type="hidden" /> <input name="no_shipping" value="1" type="hidden" /> <input name="return" value="http://striderweb.com/" type="hidden" /> <input name="cancel_return" value="http://striderweb.com/" type="hidden" /> <input name="cn" value="Send a Note" type="hidden" /> <input name="currency_code" value="USD" type="hidden" /> <input name="tax" value="0" type="hidden" /><input name="lc" value="US" type="hidden" /><input name="bn" value="PP-DonationsBF" type="hidden" /><input src="resources/donatebutton.gif" name="submit" alt="[Donate]" title="Make payments with PayPal - it's fast, free and secure!" type="image" width="74" height="21" />
+</form>
+
+<h2 id="history">History/ Acknowledgements</h2>
+
+<pre>
+v 2.6.1 (23 July 2009)
+* Moved plugin_action_links hook to vmb-plugins.php
+* Wrapped all plugin hook stuff in is_array($vmb_auto_plugins) check
+* Include_once() mb-autoconfig and mb-user instead of require_once()
+* Removed some file_exists checks in favor of @include()
+* Minor usage comment changes
+* Removed ABSPATH define. Should never be needed and could cause problems if present.
+* fixed broken link/ID to auto-plugins section
+* Specified WP 2.8+ for auto plugins
+* clarified use notes
+* Added NONCE_KEY define
+* Renamed "ozh_menu_icon.png" to "menu_icon.png"
+* Added prelim "database switch" code (not yet implemented though)
+* vmb-plugins.php is now just a bootstrap, calling a function in vmb-core.php
+* Minor improvement to vmb->get_sysinfo
+* vmb-plugins-bootstrap.php now checks if it's running under VMB before doing anything
+
+v 2.6 (28 May 2009)
+* Added auto-plugin functionality via $vmb_auto_plugins[] array
+* New file vmb-plugin-bootstrap.php
+* New file resources/vmb-plugins.php
+* Removed wp-config-vmb.php -- that code is now at the bottom of wp-config.php
+* Moved admin footer out of vmb-functions.php
+* Setting $vmb_core_only now prevents entire vmb_functions.php from loading
+* Consolidated vmbp() and vmbp_init()
+* Improved get_vmb_url() and get_wp_content_url()
+* Relocated mod_rewrite stuff to "this stuff is broken" area
+* Improved str_deslash (removes backslashes)
+* The usual minor cleanup
+
+v2.5 (17 Nov 2008)
+* Significant improvements to the code that determines the VUSER.
+* Fully WordPress 2.6 compatible (can handle moving wp-content directory)
+	* tested on WordPress 2.7 beta 1
+* Can specify defaults in autoconfig and override in later config file
+* New VMB_DIR constant
+* New VMB_URL constant
+* ***Experimental*** New VMB_ACCEPT_REDIRECTS constant
+* Stripped wp-config.php -- functions moved to wp-config-vmb.php or multiblog/resources/ for easier upgrades
+* Fixed readme to reflect lack of plugin
+* Added WP_SITEURL and WP_HOME to diagnostics
+* Added "Ohz' Admin Drop Down Menu" icon
+* Improved handling of slashes on paths and vusers
+* Improved handling of missing $rootpath in $vmb->get_virtual_user();
+* "Plugin" functions can be turned off by setting $vmb_core_only in wp-config.php
+
+
+v2.4 (9 July 2008)
+* Fixed two recent bugs in get_virtual_user() that could prevent VUSER from being determined correctly (Thanks, David Mohr)
+* Eliminated plugin.  That functionality now built in
+
+v2.3 (12 June 2008)
+* Updated admin for WP 2.5:
+	- added direct link from plugins page
+	- added footer
+* Code cleanup and abstraction -- e.g. most functions called via "$this->"
+* Added $vmb->get_plugin_data()
+
+v2.2.3 (22 April 2008)
+* BUGFIX: If another plugin called wp-config.php directly, VUSERS came up wrong 
+    (thank you "<a href="http://pozmu.net/">Pozmu</a>" for the catch <em>and</em> the fix.)
+* Fixed typos (duh) in sample configuration files
+* Added SECRET_KEY define to sample configuration files, per changes to 
+    the standard wp-config.php in WordPress 2.5
+
+v2.2.2 (7 April 2008)
+* BUGFIX: Security hole introduced in 2.2.  VUSER detection should key 
+    off of $_SERVER['SERVER_NAME'] instead of $_SERVER['HTTP_HOST'];
+
+v2.2.1 (31 March 2008)
+* All default config files now end with "-sample.php" so that upgrades 
+    don't overwrite existing configurations.
+
+v2.2 (29 March 2008) 
+* Most information calls abstracted through get_*info functions
+* Class declared as global $vmb.  Internal calls abstracted through $this->
+* BUGFIX: get_virtual_user() -- line to get dirname( $rootpath ) was missing
+
+v2.1.2 (never released):
+* Moved most functions into vmb class
+* Added MySQL and PHP versions to vmb::diagnostics output
+* Other minor changes to vmb::diagnostics
+
+v2.1.1 (16 December 2007):
+* SECURITY FIX: Multiblog Options panel was accessible to all user 
+    levels.  Now requires 'manage_options' capability
+
+v2.1 (15 Dec 2007):
+* Blogs can be in subdirectories, e.g. 
+	http://example.com/blogs/cat/ and http://example.com/blogs/dog/
+* Changed all mb_ naming to vmb_ (functions and variables) to avoid 
+	confusion with PHP multi-byte functions
+* vmb_diagnostics allows override
+* New function: vmb_get_homepage()
+* New function: vmb_get_bloginfo()
+* code abstraction and cleanup
+* new support plugin
+* Plugin: Added basic Options page -- currently shows diagnostic info and homepage link
+* Tightened replace in vmb_clean_vuser() for better security
+* If somebody calls vmb_get_virtual_user(), it just returns VUSER 
+	instead of re-calculating (unless an $altroot is passed)
+* Re-added get_virtual_user() function for backwards compatibility 
+	with original Mertner version
+
+v 2.0 (21 Nov 2007): Hugely improved ease of setup and improved 
+	(i.e. fixed) usability with domains and subdomains.  Ability to 
+	auto-configure all, some, or none of the blogs, adding great 
+	flexibility between standardized or custom configurations on a 
+	blog-to-blog basis.  Also added user-accessible -- and stable -- 
+	functions, and the VUSER constant.
+
+v 1.1:
+*	New Owner: Stephen Rider
+*	Extensive reorganization, code cleanup, and full documentation.
+	Among other improvements, the whole package became self-contained 
+	within the wp-content directory.
+
+v 1.0: The basic symlink methodology was created by <a href="http://www.mertner.com/allan/index.php?p=15">Allan Mertner</a>.
+</pre>
+
+<p>Many of the improvements to version 2 were based upon or inspired by commenters to my blog.  To them, and to everyone who has sent comments, I am grateful.</p>
+
+<p>Good luck.  Have fun.</p>
+
+<p>Stephen Rider<br />
+<a href="http://striderweb.com/">http://striderweb.com/</a></p>
+</body>
+</html>

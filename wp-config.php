@@ -52,7 +52,10 @@
 // * DO NOT EDIT BELOW THIS LINE *
 // *******************************
 
-// ABSPATH is defined in wp-load.php
+// Note: ABSPATH is defined in wp-load.php.  If your plugin is calling wp-config.php 
+// directly, be aware that ABSPATH **may not be right** in WP 2.8 or later
+if ( ! defined( 'ABSPATH' ) )
+       define( 'ABSPATH', dirname( __FILE__ ) . '/' );
 
 if ( ! defined( 'VMB_DIR' ) ) {
 	defined( 'WP_CONTENT_DIR' ) ? 

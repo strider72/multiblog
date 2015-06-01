@@ -291,7 +291,7 @@ appreciated.
 
 ## History/ Acknowledgements
 
-###    v 2.7-dev-2012-11-24
+###    v 2.7-dev-2014-08-24
     * Fixed plugin description - removed "If you see this something's wrong" message since WP now shows the MU plugins in admin
     * Renamed $vmb->get_virtual_user() to $vmb->get_vuser() to avoid confusion with (not in a class) get_virtual_user()
     * Get rid of eval() for tests within $vmb->get_vuser()

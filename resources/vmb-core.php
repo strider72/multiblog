@@ -80,7 +80,7 @@ class vmb {
 
 	// The Virtual Multiblog equivalent of a plugin header
 	var $sysinfo = array(
-		'version' => '2.6.2b',
+		'version' => '2.7-dev',
 		'date' => '2014-08-24'
 	);
 

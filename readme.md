@@ -1,12 +1,10 @@
 # Virtual Multiblog
 
-## for WordPress
+### for WordPress
 
-## a.k.a. "Strider's Modified Mertner Method Multiblog"
+#### a.k.a. "Strider's Modified Mertner Method Multiblog"
 
 Home Page: http://striderweb.com/nerdaphernalia/features/virtual-multiblog/
-
-Readme Updated 28 May 2009, includes VMB 2.6  (History updated more frequently)
 
 Virtual Multiblog allows you to run more than one blog off a single install of
 WordPress. Each blog is managed as a completely separate install -- separate

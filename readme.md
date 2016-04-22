@@ -5,6 +5,7 @@
 #### a.k.a. "Strider's Modified Mertner Method Multiblog"
 
 Home Page: http://striderweb.com/nerdaphernalia/features/virtual-multiblog/
+DONATE: https://paypal.me/SteveRider
 
 Virtual Multiblog allows you to run more than one blog off a single install of
 WordPress. Each blog is managed as a completely separate install -- separate

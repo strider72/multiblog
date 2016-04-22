@@ -220,14 +220,16 @@ function `get_virtual_user( $clean )`
 
 function `$vmb->get_bloginfo( $show )`  
 The following are recognized for `$show`:
-    * `'config'`: the config file being used. Setting second parameter to `true` will return the entire server path as well
-    * `'vuser'`: deprecated. Use `get_virtual_user()` instead.
+
+  * `'config'`: the config file being used. Setting second parameter to `true` will return the entire server path as well
+  * `'vuser'`: deprecated. Use `get_virtual_user()` instead.
 
 function `$vmb->get_sysinfo( $show )`  
 The following are recognized for `$show`:
-    * `'configpath'`: the server path to the configuration files.
-    * `'diagnostics'` (other parameters: `$html`, `$override`): returns diagnostic info to help with troubleshooting. By default, wraps result in `<pre>` tags; set `$html = false` to return the raw string. IMPORTANT: By default this function returns _nothing_ unless `$vmb_diagnostics` is set to `true` in `wp-config.php`. This means you can leave it in a template and only have it show when needed. If you want to show it always, set `$override` to `true`.
-    * `'version'`: the version of the Virtual Multiblog system.
+
+  * `'configpath'`: the server path to the configuration files.
+  * `'diagnostics'` (other parameters: `$html`, `$override`): returns diagnostic info to help with troubleshooting. By default, wraps result in `<pre>` tags; set `$html = false` to return the raw string. IMPORTANT: By default this function returns _nothing_ unless `$vmb_diagnostics` is set to `true` in `wp-config.php`. This means you can leave it in a template and only have it show when needed. If you want to show it always, set `$override` to `true`.
+  * `'version'`: the version of the Virtual Multiblog system.
 
 ## Using Custom Permalinks
 
@@ -278,6 +280,8 @@ use the system myself, and I would like to see all of these ideas realized.
 ## Contribute
 
 _Was this download worth something to you?_
+
+https://paypal.me/SteveRider
 
 I've put a lot of time and effort into making Virtual Multiblog work well. I
 use it myself, and I'm gratified that so many others have found it useful. If

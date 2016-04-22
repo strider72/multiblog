@@ -92,15 +92,16 @@ http://www.dogblog.com/fido/, and http://www.catblog.com/celebrities/morris/
   1. Follow Steps 1-4 from the Easy Install.
   2. In `wp-content/multiblog/config/`, rename `mb-users-sample.php` to `mb-users.php`. Open `mb-users.php` in a text editor. Populate `$vusers[]` according to the instructions there. For this example we have:  
 
-    $vusers[] = 'catblog.com';
-    $vusers[] = 'dogblog.com';
-    $vusers[] = 'mutts.dogblog.com';
-    $vusers[] = 'catblog.com/celebrities/morris';
-    $vusers[] = 'dogblog.com/fido';
+    $vusers[] = 'catblog.com';  
+    $vusers[] = 'dogblog.com';  
+    $vusers[] = 'mutts.dogblog.com';  
+    $vusers[] = 'catblog.com/celebrities/morris';  
+    $vusers[] = 'dogblog.com/fido';  
 
-Save and close the file
+    Save and close the file
 
-    * CAUTION: You could simply set that last one to `$vusers[] = 'fido';` (ditto `'celebrities/morris'`), but that would open us up to the same issue described in Easy Setup: catblog.com/fido would also be an active blog! If mixing domains and directories, set specific $vusers! Again, this is only an issue if using both multiple domains _and_ directories.
+    CAUTION: You could simply set that last one to `$vusers[] = 'fido';` (ditto `'celebrities/morris'`), but that would open us up to the same issue described in Easy Setup: catblog.com/fido would also be an active blog! If mixing domains and directories, set specific $vusers! Again, this is only an issue if using both multiple domains _and_ directories.
+
   3. For this example:
     * Set up the two domains, and the "mutts.dogblog" subdomain, to point to the same root directory.
     * In the site's root directory, create a symbolic link to the root directory, and call it "fido". (More information on symbolic links can be found below).
@@ -212,24 +213,21 @@ open a Terminal window and use the `ln` command.
 The following are stable and can be called in templates or plugins:
 
 constant `VUSER`
+    * The current virtual user. This is handy for creating Themes, for example, as you can call different template files for each VUSER.
 
-    The current virtual user. This is handy for creating Themes, for example, as you can call different template files for each VUSER.
 function `get_virtual_user( $clean )`
+    * Returns the current virtual user. Set `$clean` to TRUE to get a "filename friendly" version -- with dots, slashes, etc. converted to underscores.
 
-    Returns the current virtual user. Set `$clean` to TRUE to get a "filename friendly" version -- with dots, slashes, etc. converted to underscores.
-function `$vmb->get_bloginfo( $show )`
+function `$vmb->get_bloginfo( $show )`  
+The following are recognized for `$show`:
+    * `'config'`: the config file being used. Setting second parameter to `true` will return the entire server path as well
+    * `'vuser'`: deprecated. Use `get_virtual_user()` instead.
 
-    The following are recognized for `$show`:
-
-  * `'config'`: the config file being used. Setting second parameter to `true` will return the entire server path as well
-  * `'vuser'`: deprecated. Use `get_virtual_user()` instead.
-function `$vmb->get_sysinfo( $show )`
-
-    The following are recognized for `$show`:
-
-  * `'configpath'`: the server path to the configuration files.
-  * `'diagnostics'` (other parameters: `$html`, `$override`): returns diagnostic info to help with troubleshooting. By default, wraps result in `<pre>` tags; set `$html = false` to return the raw string. IMPORTANT: By default this function returns _nothing_ unless `$vmb_diagnostics` is set to `true` in `wp-config.php`. This means you can leave it in a template and only have it show when needed. If you want to show it always, set `$override` to `true`.
-  * `'version'`: the version of the Virtual Multiblog system.
+function `$vmb->get_sysinfo( $show )`  
+The following are recognized for `$show`:
+    * `'configpath'`: the server path to the configuration files.
+    * `'diagnostics'` (other parameters: `$html`, `$override`): returns diagnostic info to help with troubleshooting. By default, wraps result in `<pre>` tags; set `$html = false` to return the raw string. IMPORTANT: By default this function returns _nothing_ unless `$vmb_diagnostics` is set to `true` in `wp-config.php`. This means you can leave it in a template and only have it show when needed. If you want to show it always, set `$override` to `true`.
+    * `'version'`: the version of the Virtual Multiblog system.
 
 ## Using Custom Permalinks
 

@@ -212,11 +212,11 @@ open a Terminal window and use the `ln` command.
 
 The following are stable and can be called in templates or plugins:
 
-constant `VUSER`
-    * The current virtual user. This is handy for creating Themes, for example, as you can call different template files for each VUSER.
+constant `VUSER`  
+The current virtual user. This is handy for creating Themes, for example, as you can call different template files for each VUSER.
 
-function `get_virtual_user( $clean )`
-    * Returns the current virtual user. Set `$clean` to TRUE to get a "filename friendly" version -- with dots, slashes, etc. converted to underscores.
+function `get_virtual_user( $clean )`  
+Returns the current virtual user. Set `$clean` to TRUE to get a "filename friendly" version -- with dots, slashes, etc. converted to underscores.
 
 function `$vmb->get_bloginfo( $show )`  
 The following are recognized for `$show`:

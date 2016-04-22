@@ -201,7 +201,7 @@ filesystem, PHP version or configuration, server configuration, and so forth.
 Nonetheless, I will try to get some pointers up at some point.
 
 Let me put it another way. **_I_** don't make my own symlinks -- I call my web
-host, Mike. However, on my test site (running on my OS X laptop via
+host. However, on my test site (running on my OS X laptop via
 [MAMP](http://www.mamp.info/)) I have a utility called
 [Cocktail](http://www.maintain.se/cocktail/) that makes them for me.
 
